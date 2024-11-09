@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { useSnackbar } from 'notistack';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -8,41 +10,70 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!name || !email || !password) {
+            enqueueSnackbar('Todos os campos são obrigatórios', { variant: 'warning' });
+            return;
+        }
+
         try {
             await register(name, email, password);
-            alert('Registro realizado com sucesso!');
-            navigate('/login'); // Redireciona para a página de login ou outra de sua escolha
+            enqueueSnackbar('Registro realizado com sucesso!', { variant: 'success' });
+            navigate('/login');
         } catch (error) {
-            alert('Erro ao registrar. Verifique os dados.');
+            const errorMessage = error.response?.data?.message || 'Erro ao registrar. Verifique os dados.';
+            enqueueSnackbar(errorMessage, { variant: 'error' });
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Registro</h2>
-            <input
-                type="text"
-                placeholder="Nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Registrar</button>
-        </form>
+        <Container maxWidth="sm">
+            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Typography component="h1" variant="h5">
+                    Registro
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <TextField
+                        fullWidth
+                        label="Nome"
+                        variant="outlined"
+                        margin="normal"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        margin="normal"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Senha"
+                        type="password"
+                        variant="outlined"
+                        margin="normal"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Registrar
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
     );
 };
 

@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
-            api.get('/auth/validateToken') // Rota para validar o token no backend
+            api.get('/auth/validateToken')
                 .then((response) => setUser(response.data.user))
                 .catch(() => logout());
         }
