@@ -18,7 +18,6 @@ const TasksBoard = () => {
         const fetchTasks = async () => {
             try {
                 const response = await api.get(`/projects/${projectId}/tasks`);
-
                 const categorizedTasks = {
                     pending: [],
                     inProgress: [],
@@ -30,8 +29,6 @@ const TasksBoard = () => {
                     else if (task.status === 'Em andamento') categorizedTasks.inProgress.push(task);
                     else if (task.status === 'Concluída') categorizedTasks.done.push(task);
                 });
-
-                console.log("Tarefas categorizadas:", categorizedTasks);
 
                 setTasks(categorizedTasks);
             } catch (error) {
@@ -128,8 +125,6 @@ const TasksBoard = () => {
                                     <Button color="secondary" size="small" onClick={() => handleDeleteTask(task._id, task.status)}>
                                         Excluir
                                     </Button>
-
-                                    <CommentsSection taskId={task._id} />
                                 </Paper>
                             ))}
                         </Paper>
@@ -172,8 +167,9 @@ const TasksBoard = () => {
                         onChange={(e) => setNewTaskStatus(e.target.value)}
                         style={{ marginTop: '10px' }}
                     >
-                        <MenuItem value="todo">A Fazer</MenuItem>
-                        <MenuItem value="inProgress">Em Progresso</MenuItem>
+                        <MenuItem value="Pendente">Pendente</MenuItem>
+                        <MenuItem value="Em andamento">Em andamento</MenuItem>
+                        <MenuItem value="Concluída">Concluída</MenuItem>
                     </Select>
                     <Button
                         variant="contained"
@@ -188,7 +184,20 @@ const TasksBoard = () => {
 
             {/* Modal de Edição de Tarefa */}
             <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-                <Box sx={{ padding: 4, backgroundColor: 'white', maxWidth: 400, margin: 'auto', marginTop: '10%' }}>
+                <Box sx={{
+                    padding: 4,
+                    backgroundColor: 'white',
+                    maxWidth: 400,
+                    width: '90%',
+                    height: '80vh', // Altura fixa para garantir a rolagem interna
+                    overflowY: 'auto', // Habilita a rolagem interna
+                    margin: 'auto',
+                    position: 'absolute', // Define a posição para centralizar
+                    top: '50%', // Centraliza verticalmente
+                    left: '50%', // Centraliza horizontalmente
+                    transform: 'translate(-50%, -50%)', // Ajuste para centralizar
+                    borderRadius: 2, // Suaviza os cantos
+                }}>
                     <Typography variant="h6">Editar Tarefa</Typography>
                     <TextField
                         label="Título"
@@ -226,6 +235,13 @@ const TasksBoard = () => {
                     >
                         Salvar Alterações
                     </Button>
+
+                    {/* Seção de Comentários */}
+                    {editingTask && (
+                        <Box mt={4}>
+                            <CommentsSection taskId={editingTask._id} />
+                        </Box>
+                    )}
                 </Box>
             </Modal>
         </Container>
