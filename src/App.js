@@ -1,4 +1,5 @@
 import React from 'react';
+import Notifications from './components/Notifications';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import Login from './pages/Login';
@@ -12,6 +13,7 @@ function App() {
     <SnackbarProvider maxSnack={3}>
       <AuthProvider>
         <Router>
+          <Notifications />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
