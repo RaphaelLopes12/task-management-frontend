@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Grid, Paper, TextField, Button, Modal, Box, Select, MenuItem } from '@mui/material';
+import CommentsSection from './CommentsSection';
 
 const TasksBoard = () => {
     const { projectId } = useParams();
@@ -127,6 +128,8 @@ const TasksBoard = () => {
                                     <Button color="secondary" size="small" onClick={() => handleDeleteTask(task._id, task.status)}>
                                         Excluir
                                     </Button>
+
+                                    <CommentsSection taskId={task._id} />
                                 </Paper>
                             ))}
                         </Paper>
